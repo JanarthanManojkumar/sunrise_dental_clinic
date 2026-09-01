@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sunrise Dental Clinic - Manage Treatments</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page page-wide">
+        <div class="banner">Manage Treatments</div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Name</th><th>Fee</th></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div class="content">
+            <form id="treatmentForm" class="form-grid">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+                <label for="fee">Fee:</label>
+                <input type="text" id="fee" required>
+            </form>
+            <div class="button-row">
+                <button type="submit" form="treatmentForm" class="primary" id="btnAdd">Add</button>
+                <button id="btnUpdate">Update Selected</button>
+                <button onclick="location.href='dashboard.html'">Back to Dashboard</button>
+            </div>
+            <div id="message" class="message error"></div>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/treatments.js"></script>
+</body>
+</html>
