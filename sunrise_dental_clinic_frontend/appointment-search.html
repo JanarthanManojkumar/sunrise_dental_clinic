@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sunrise Dental Clinic - Search Appointment</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page">
+        <div class="banner">Search / Manage Appointment</div>
+        <div class="content">
+            <form id="searchForm" class="search-bar">
+                <label for="appointmentNo">Appointment No:</label>
+                <input type="text" id="appointmentNo" required>
+                <button type="submit" class="primary">Search</button>
+            </form>
+
+            <div class="details-grid">
+                <label>Patient:</label><span class="value" id="valPatient">-</span>
+                <label>Dentist:</label><span class="value" id="valDentist">-</span>
+                <label>Treatment:</label><span class="value" id="valTreatment">-</span>
+                <label>Date / Time:</label><span class="value" id="valDateTime">-</span>
+                <label>Status:</label><span class="value" id="valStatus">-</span>
+            </div>
+
+            <div class="button-row">
+                <button id="btnUpdate" disabled>Update</button>
+                <button id="btnCancel" disabled>Cancel Appointment</button>
+                <button id="btnBill" disabled>Calculate &amp; Print Bill</button>
+                <button onclick="location.href='dashboard.html'">Back to Dashboard</button>
+            </div>
+            <div id="message" class="message error"></div>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/appointment-search.js"></script>
+</body>
+</html>

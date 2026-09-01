@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="pageTitle">Sunrise Dental Clinic - Appointment</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page">
+        <div class="banner" id="banner">Register Appointment</div>
+        <div class="content">
+            <form id="appointmentForm" class="form-grid">
+                <label for="patientName">Patient Name:</label>
+                <input type="text" id="patientName" required>
+
+                <label for="address">Address:</label>
+                <input type="text" id="address">
+
+                <label for="contactNumber">Contact Number:</label>
+                <input type="text" id="contactNumber" required>
+
+                <label for="email">Email (for e-bills):</label>
+                <input type="email" id="email">
+
+                <label for="dentist">Dentist:</label>
+                <select id="dentist" required></select>
+
+                <label for="treatment">Treatment:</label>
+                <select id="treatment" required></select>
+
+                <label for="date">Date (YYYY-MM-DD):</label>
+                <input type="text" id="date" placeholder="YYYY-MM-DD" required>
+
+                <label for="time">Time (HH:mm):</label>
+                <input type="text" id="time" placeholder="HH:mm" required>
+            </form>
+            <div class="button-row">
+                <button type="submit" form="appointmentForm" class="primary" id="btnSubmit">Register</button>
+                <button onclick="location.href='dashboard.html'">Back to Dashboard</button>
+            </div>
+            <div id="message" class="message error"></div>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/appointment-form.js"></script>
+</body>
+</html>

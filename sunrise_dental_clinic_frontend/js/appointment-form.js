@@ -1,0 +1,97 @@
+const user = requireAuth();
+
+const params = new URLSearchParams(window.location.search);
+const mode = params.get("mode") === "update" ? "update" : "register";
+const appointmentNo = params.get("appointmentNo");
+
+const messageEl = document.getElementById("message");
+const dentistSelect = document.getElementById("dentist");
+const treatmentSelect = document.getElementById("treatment");
+
+if (mode === "update") {
+    document.getElementById("pageTitle").textContent = "Sunrise Dental Clinic - Update Appointment";
+    document.getElementById("banner").textContent = "Update Appointment";
+    document.getElementById("btnSubmit").textContent = "Save Changes";
+    ["patientName", "address", "contactNumber", "email"].forEach((id) => {
+        document.getElementById(id).disabled = true;
+    });
+}
+
+async function loadDentists() {
+    const result = await apiFetch("/dentists");
+    if (result.success) {
+        for (const dentist of result.data) {
+            const option = document.createElement("option");
+            option.value = dentist.id;
+            option.textContent = dentist.name;
+            dentistSelect.appendChild(option);
+        }
+    }
+}
+
+async function loadTreatments() {
+    const result = await apiFetch("/treatments");
+    if (result.success) {
+        for (const treatment of result.data) {
+            const option = document.createElement("option");
+            option.value = treatment.id;
+            option.textContent = treatment.name;
+            treatmentSelect.appendChild(option);
+        }
+    }
+}
+
+async function loadExistingAppointment() {
+    if (mode !== "update" || !appointmentNo) {
+        return;
+    }
+    const result = await apiFetch("/appointments/" + encodeURIComponent(appointmentNo));
+    if (!result.success) {
+        messageEl.textContent = result.message;
+        return;
+    }
+    const appointment = result.data;
+    document.getElementById("patientName").value = appointment.patient.name;
+    document.getElementById("address").value = appointment.patient.address || "";
+    document.getElementById("contactNumber").value = appointment.patient.contactNumber;
+    document.getElementById("email").value = appointment.patient.email || "";
+    dentistSelect.value = appointment.dentist.id;
+    treatmentSelect.value = appointment.treatment.id;
+    document.getElementById("date").value = appointment.appointmentDate;
+    document.getElementById("time").value = appointment.appointmentTime;
+}
+
+(async () => {
+    await Promise.all([loadDentists(), loadTreatments()]);
+    await loadExistingAppointment();
+})();
+
+document.getElementById("appointmentForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    messageEl.textContent = "";
+
+    const body = {
+        patientName: document.getElementById("patientName").value,
+        address: document.getElementById("address").value,
+        contactNumber: document.getElementById("contactNumber").value,
+        email: document.getElementById("email").value,
+        dentistId: Number(dentistSelect.value),
+        treatmentId: Number(treatmentSelect.value),
+        date: document.getElementById("date").value.trim(),
+        time: document.getElementById("time").value.trim(),
+    };
+
+    const result = mode === "register"
+        ? await apiFetch("/appointments", { method: "POST", body: JSON.stringify(body) })
+        : await apiFetch("/appointments/" + encodeURIComponent(appointmentNo), {
+            method: "PUT", body: JSON.stringify(body),
+        });
+
+    if (result.success) {
+        const verb = mode === "register" ? "Appointment registered: " : "Appointment updated: ";
+        alert(verb + result.data.appointmentNo);
+        window.location.href = "dashboard.html";
+    } else {
+        messageEl.textContent = result.message;
+    }
+});
