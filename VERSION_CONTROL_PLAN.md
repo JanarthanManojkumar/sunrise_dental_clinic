@@ -11,7 +11,7 @@ Source migrated from `D:\ICBT\sample` (`sunrise_dental_clinic_ant`, `sunrise_den
 - [x] `.gitignore` — build output and IDE-local files excluded
 - [x] `VERSION_CONTROL_PLAN.md` — this file
 - [x] Backend scaffold — project files, shared infra, `DBConnection` (env vars)
-- [ ] Frontend scaffold — shared styles, API client
+- [x] Frontend scaffold — shared styles, API client
 - [ ] Backend: authentication
 - [ ] Frontend: login page and auth guards
 - [ ] Backend: main menu and help screens
