@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sunrise Dental Clinic - Main Menu</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page">
+        <div class="banner">Sunrise Dental Clinic</div>
+        <div id="welcome" class="welcome"></div>
+        <div class="nav-stack">
+            <button onclick="location.href='appointment-form.html?mode=register'">Register Appointment</button>
+            <button onclick="location.href='appointment-search.html'">Search / Manage Appointment</button>
+            <button id="btnDentists" onclick="location.href='dentists.html'" hidden>Manage Dentists</button>
+            <button id="btnTreatments" onclick="location.href='treatments.html'" hidden>Manage Treatments</button>
+            <button id="btnReports" onclick="location.href='reports.html'" hidden>Reports</button>
+            <button onclick="location.href='help.html'">Help</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -15,7 +15,7 @@ Source migrated from `D:\ICBT\sample` (`sunrise_dental_clinic_ant`, `sunrise_den
 - [x] Backend: authentication
 - [x] Frontend: login page and auth guards
 - [x] Backend: main menu and help screens
-- [ ] Frontend: dashboard and help pages
+- [x] Frontend: dashboard and help pages
 - [ ] Backend: appointment booking and patient management
 - [ ] Frontend: appointment booking and search pages
 - [ ] Backend: dentist management
