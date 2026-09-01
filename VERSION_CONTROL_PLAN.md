@@ -19,7 +19,7 @@ Source migrated from `D:\ICBT\sample` (`sunrise_dental_clinic_ant`, `sunrise_den
 - [x] Backend: appointment booking and patient management
 - [x] Frontend: appointment booking and search pages
 - [x] Backend: dentist management
-- [ ] Frontend: dentist management page
+- [x] Frontend: dentist management page
 - [ ] Backend: treatment management
 - [ ] Frontend: treatment management page
 - [ ] Backend: billing and receipts
