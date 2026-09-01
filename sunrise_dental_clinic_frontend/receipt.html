@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sunrise Dental Clinic - Bill Receipt</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page">
+        <div class="banner">Bill Receipt</div>
+        <pre class="receipt-text" id="receiptText"></pre>
+        <div class="button-row">
+            <button class="primary" onclick="window.print()">Print</button>
+            <button id="btnEmail">Email Bill</button>
+            <button onclick="location.href='appointment-search.html'">Close</button>
+        </div>
+        <div id="message" class="message"></div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/receipt.js"></script>
+</body>
+</html>

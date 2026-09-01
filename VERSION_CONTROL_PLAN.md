@@ -23,7 +23,7 @@ Source migrated from `D:\ICBT\sample` (`sunrise_dental_clinic_ant`, `sunrise_den
 - [x] Backend: treatment management
 - [x] Frontend: treatment management page
 - [x] Backend: billing and receipts
-- [ ] Frontend: receipt page
+- [x] Frontend: receipt page
 - [ ] Backend: reporting
 - [ ] Frontend: reports page
 - [ ] Backend: REST API server wiring
