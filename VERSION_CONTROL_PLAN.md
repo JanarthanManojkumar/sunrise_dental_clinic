@@ -13,7 +13,7 @@ Source migrated from `D:\ICBT\sample` (`sunrise_dental_clinic_ant`, `sunrise_den
 - [x] Backend scaffold — project files, shared infra, `DBConnection` (env vars)
 - [x] Frontend scaffold — shared styles, API client
 - [x] Backend: authentication
-- [ ] Frontend: login page and auth guards
+- [x] Frontend: login page and auth guards
 - [ ] Backend: main menu and help screens
 - [ ] Frontend: dashboard and help pages
 - [ ] Backend: appointment booking and patient management
