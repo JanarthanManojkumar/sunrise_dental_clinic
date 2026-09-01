@@ -28,7 +28,7 @@ Source migrated from `D:\ICBT\sample` (`sunrise_dental_clinic_ant`, `sunrise_den
 - [x] Frontend: reports page
 - [x] Backend: REST API server wiring
 - [x] Docs: schema migration and project planning docs
-- [ ] Docs: README overview and setup instructions
+- [x] Docs: README overview and setup instructions
 
 ## Setup after clone
 
