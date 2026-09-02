@@ -1,14 +1,11 @@
 package sunrise_dental_clinic_backend;
 
-import javax.swing.SwingUtilities;
-import util.UiTheme;
-import view.LoginView;
+import java.io.IOException;
 
 public class Sunrise_dental_clinic_backend {
 
-    public static void main(String[] args) {
-        UiTheme.apply();
-        SwingUtilities.invokeLater(() -> new LoginView().setVisible(true));
+    public static void main(String[] args) throws IOException {
+        api.ApiServer.main(args);
     }
 
 }
