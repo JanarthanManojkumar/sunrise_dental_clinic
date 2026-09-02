@@ -47,6 +47,9 @@ existingPatientSelect.addEventListener("change", () => {
     document.getElementById("address").value = patient ? (patient.address || "") : "";
     document.getElementById("contactNumber").value = patient ? patient.contactNumber : "";
     document.getElementById("email").value = patient ? (patient.email || "") : "";
+    ["patientName", "address", "contactNumber", "email"].forEach((id) => {
+        document.getElementById(id).disabled = !!patient;
+    });
 });
 
 async function loadDentists() {
