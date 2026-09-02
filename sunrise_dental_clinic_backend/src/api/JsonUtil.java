@@ -53,6 +53,15 @@ public final class JsonUtil {
         return json;
     }
 
+    public static JSONObject userAdminJson(User user) {
+        JSONObject json = new JSONObject();
+        json.put("id", user.getId());
+        json.put("username", user.getUsername());
+        json.put("role", user.getRole().name());
+        json.put("active", user.isActive());
+        return json;
+    }
+
     public static JSONObject dentistJson(Dentist dentist) {
         JSONObject json = new JSONObject();
         json.put("id", dentist.getId());

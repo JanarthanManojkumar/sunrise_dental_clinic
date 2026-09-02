@@ -58,4 +58,9 @@ public final class TokenStore {
             SESSIONS.remove(token);
         }
     }
+
+    /** Drops every live session for a user, e.g. right after their account is deactivated. */
+    public static void invalidateForUser(int userId) {
+        SESSIONS.entrySet().removeIf(entry -> entry.getValue().user.getId() == userId);
+    }
 }

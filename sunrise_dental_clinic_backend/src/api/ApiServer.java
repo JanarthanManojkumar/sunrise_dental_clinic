@@ -23,6 +23,7 @@ public class ApiServer {
         server.createContext("/api/treatments", new TreatmentHandler());
         server.createContext("/api/appointments", new AppointmentHandler());
         server.createContext("/api/patients", new PatientHandler());
+        server.createContext("/api/users", new UserHandler());
         server.createContext("/api/bills", new BillingHandler());
         server.createContext("/api/reports", new ReportHandler());
 

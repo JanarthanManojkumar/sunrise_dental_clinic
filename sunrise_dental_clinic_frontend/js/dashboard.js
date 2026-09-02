@@ -8,5 +8,6 @@ if (user) {
         document.getElementById("btnDentists").hidden = false;
         document.getElementById("btnTreatments").hidden = false;
         document.getElementById("btnReports").hidden = false;
+        document.getElementById("btnStaff").hidden = false;
     }
 }

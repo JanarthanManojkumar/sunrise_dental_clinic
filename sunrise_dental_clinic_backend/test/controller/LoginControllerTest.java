@@ -53,7 +53,7 @@ public class LoginControllerTest {
 
     @Test
     public void wrongPasswordFailsWithInvalidCredentialsMessage() throws SQLException {
-        User admin = new User(1, "admin", PasswordUtil.hash("admin123"), Role.ADMIN);
+        User admin = new User(1, "admin", PasswordUtil.hash("admin123"), Role.ADMIN, true);
         when(userDAO.findByUsername("admin")).thenReturn(admin);
 
         ControllerResult<User> result = loginController.login("admin", "wrongPassword");
@@ -64,7 +64,7 @@ public class LoginControllerTest {
 
     @Test
     public void correctCredentialsLogInSuccessfully() throws SQLException {
-        User admin = new User(1, "admin", PasswordUtil.hash("admin123"), Role.ADMIN);
+        User admin = new User(1, "admin", PasswordUtil.hash("admin123"), Role.ADMIN, true);
         when(userDAO.findByUsername("admin")).thenReturn(admin);
 
         ControllerResult<User> result = loginController.login("admin", "admin123");

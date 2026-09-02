@@ -38,6 +38,9 @@ public class LoginController {
             if (user == null || !PasswordUtil.matches(password, user.getPasswordHash())) {
                 return ControllerResult.failure("Invalid username or password");
             }
+            if (!user.isActive()) {
+                return ControllerResult.failure("This account has been deactivated.");
+            }
             SessionManager.getInstance().startSession(user);
             return ControllerResult.success(user);
         } catch (SQLException e) {
