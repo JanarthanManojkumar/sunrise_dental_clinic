@@ -19,7 +19,7 @@ function displayAppointment(appointment) {
     const active = appointment.status === "SCHEDULED";
     btnUpdate.disabled = !active;
     btnCancel.disabled = !active;
-    btnBill.disabled = false;
+    btnBill.disabled = appointment.status === "CANCELLED";
 }
 
 function clearAppointment() {

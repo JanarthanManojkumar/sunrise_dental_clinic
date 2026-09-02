@@ -58,6 +58,7 @@ public class BillDAO {
                 + "FROM bills b "
                 + "JOIN appointments a ON b.appointment_id = a.id "
                 + "JOIN dentists d ON a.dentist_id = d.id "
+                + "WHERE a.status <> 'CANCELLED' "
                 + "GROUP BY d.name ORDER BY d.name";
         Connection con = DBConnection.getInstance().getConnection();
         List<DentistRevenue> revenues = new ArrayList<>();

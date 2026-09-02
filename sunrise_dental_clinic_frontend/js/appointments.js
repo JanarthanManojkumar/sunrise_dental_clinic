@@ -83,6 +83,7 @@ async function refreshTable() {
 
         const btnBill = document.createElement("button");
         btnBill.textContent = "Bill";
+        btnBill.disabled = appointment.status === "CANCELLED";
         btnBill.addEventListener("click", async () => {
             const billResult = await apiFetch(
                 "/bills/" + encodeURIComponent(appointment.appointmentNo) + "/generate",

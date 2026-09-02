@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import model.Appointment;
+import model.AppointmentStatus;
 import model.Bill;
 import model.Treatment;
 import util.BrevoEmailService;
@@ -48,6 +49,9 @@ public class BillingController {
             Appointment appointment = appointmentDAO.findByAppointmentNo(appointmentNo);
             if (appointment == null) {
                 return ControllerResult.failure("No appointment found with number " + appointmentNo);
+            }
+            if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
+                return ControllerResult.failure("Cannot bill a cancelled appointment.");
             }
 
             Bill existing = billDAO.findByAppointmentId(appointment.getId());
