@@ -8,6 +8,8 @@ const messageEl = document.getElementById("message");
 const dentistSelect = document.getElementById("dentist");
 const treatmentSelect = document.getElementById("treatment");
 
+document.getElementById("date").min = new Date().toISOString().slice(0, 10);
+
 if (mode === "update") {
     document.getElementById("pageTitle").textContent = "Sunrise Dental Clinic - Update Appointment";
     document.getElementById("banner").textContent = "Update Appointment";
