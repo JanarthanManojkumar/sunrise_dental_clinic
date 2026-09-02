@@ -43,13 +43,10 @@ async function loadExistingPatients() {
 
 existingPatientSelect.addEventListener("change", () => {
     const patient = existingPatients.find((p) => String(p.id) === existingPatientSelect.value);
-    if (!patient) {
-        return;
-    }
-    document.getElementById("patientName").value = patient.name;
-    document.getElementById("address").value = patient.address || "";
-    document.getElementById("contactNumber").value = patient.contactNumber;
-    document.getElementById("email").value = patient.email || "";
+    document.getElementById("patientName").value = patient ? patient.name : "";
+    document.getElementById("address").value = patient ? (patient.address || "") : "";
+    document.getElementById("contactNumber").value = patient ? patient.contactNumber : "";
+    document.getElementById("email").value = patient ? (patient.email || "") : "";
 });
 
 async function loadDentists() {
