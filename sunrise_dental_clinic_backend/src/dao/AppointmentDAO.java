@@ -124,6 +124,22 @@ public class AppointmentDAO {
         return appointments;
     }
 
+    public List<Appointment> findByContactNumber(String contactNumber) throws SQLException {
+        String sql = JOIN_SELECT + "WHERE p.contact_number = ? "
+                + "ORDER BY a.appointment_date DESC, a.appointment_time DESC";
+        Connection con = DBConnection.getInstance().getConnection();
+        List<Appointment> appointments = new ArrayList<>();
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, contactNumber);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    appointments.add(mapRow(rs));
+                }
+            }
+        }
+        return appointments;
+    }
+
     public List<DailyAppointmentCount> countPerDay() throws SQLException {
         String sql = "SELECT appointment_date, COUNT(*) AS total "
                 + "FROM appointments GROUP BY appointment_date ORDER BY appointment_date";

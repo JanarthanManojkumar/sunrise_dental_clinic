@@ -79,6 +79,12 @@ public final class JsonUtil {
         return json;
     }
 
+    public static JSONObject patientHistoryJson(Patient patient, List<Appointment> appointments) {
+        JSONObject json = patientJson(patient);
+        json.put("appointments", arrayOf(appointments, JsonUtil::appointmentJson));
+        return json;
+    }
+
     public static JSONObject appointmentJson(Appointment appointment) {
         JSONObject json = new JSONObject();
         json.put("id", appointment.getId());
