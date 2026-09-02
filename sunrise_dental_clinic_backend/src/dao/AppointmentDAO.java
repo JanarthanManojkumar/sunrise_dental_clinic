@@ -81,6 +81,49 @@ public class AppointmentDAO {
         return appointments;
     }
 
+    public List<Appointment> findFiltered(LocalDate date, LocalDate dateFrom, LocalDate dateTo,
+            Integer dentistId, String patientQuery) throws SQLException {
+        StringBuilder sql = new StringBuilder(JOIN_SELECT).append("WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
+        if (date != null) {
+            sql.append("AND a.appointment_date = ? ");
+            params.add(date);
+        }
+        if (dateFrom != null) {
+            sql.append("AND a.appointment_date >= ? ");
+            params.add(dateFrom);
+        }
+        if (dateTo != null) {
+            sql.append("AND a.appointment_date <= ? ");
+            params.add(dateTo);
+        }
+        if (dentistId != null) {
+            sql.append("AND d.id = ? ");
+            params.add(dentistId);
+        }
+        if (patientQuery != null && !patientQuery.isBlank()) {
+            sql.append("AND (p.name LIKE ? OR p.contact_number LIKE ?) ");
+            String like = "%" + patientQuery.trim() + "%";
+            params.add(like);
+            params.add(like);
+        }
+        sql.append("ORDER BY a.appointment_date, a.appointment_time");
+
+        Connection con = DBConnection.getInstance().getConnection();
+        List<Appointment> appointments = new ArrayList<>();
+        try (PreparedStatement pst = con.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                pst.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    appointments.add(mapRow(rs));
+                }
+            }
+        }
+        return appointments;
+    }
+
     public List<DailyAppointmentCount> countPerDay() throws SQLException {
         String sql = "SELECT appointment_date, COUNT(*) AS total "
                 + "FROM appointments GROUP BY appointment_date ORDER BY appointment_date";

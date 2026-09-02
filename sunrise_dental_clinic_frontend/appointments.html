@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sunrise Dental Clinic - Browse Appointments</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page page-wide">
+        <div class="banner">Browse Appointments</div>
+        <div class="content">
+            <form id="filterForm" class="form-grid">
+                <label for="filterDate">Date:</label>
+                <input type="date" id="filterDate">
+                <label for="filterDateFrom">From:</label>
+                <input type="date" id="filterDateFrom">
+                <label for="filterDateTo">To:</label>
+                <input type="date" id="filterDateTo">
+                <label for="filterDentist">Dentist:</label>
+                <select id="filterDentist">
+                    <option value="">Any</option>
+                </select>
+                <label for="filterPatient">Patient (name/contact):</label>
+                <input type="text" id="filterPatient">
+            </form>
+            <div class="button-row">
+                <button type="submit" form="filterForm" class="primary">Search</button>
+                <button type="button" id="btnClear">Clear Filters</button>
+                <button onclick="location.href='dashboard.html'">Back to Dashboard</button>
+            </div>
+            <div id="message" class="message error"></div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Appointment No</th><th>Patient</th><th>Dentist</th>
+                        <th>Treatment</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/appointments.js"></script>
+</body>
+</html>

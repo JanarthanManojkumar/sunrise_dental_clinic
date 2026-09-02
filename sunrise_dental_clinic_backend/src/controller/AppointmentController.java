@@ -143,6 +143,16 @@ public class AppointmentController {
         }
     }
 
+    public ControllerResult<List<Appointment>> listAppointments(LocalDate date, LocalDate dateFrom,
+            LocalDate dateTo, Integer dentistId, String patientQuery) {
+        try {
+            return ControllerResult.success(
+                    appointmentDAO.findFiltered(date, dateFrom, dateTo, dentistId, patientQuery));
+        } catch (SQLException e) {
+            return ControllerResult.failure("Database error: " + e.getMessage());
+        }
+    }
+
     private String duplicateSlotMessage(SQLIntegrityConstraintViolationException e) {
         if (e.getMessage() != null && e.getMessage().contains(DUPLICATE_SLOT_KEY)) {
             return "This dentist already has an appointment at that date and time.";

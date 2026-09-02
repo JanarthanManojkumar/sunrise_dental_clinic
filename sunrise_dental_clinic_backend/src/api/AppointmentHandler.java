@@ -6,17 +6,22 @@ import controller.ControllerResult;
 import dao.DentistDAO;
 import dao.TreatmentDAO;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.Appointment;
 import model.Dentist;
 import model.Treatment;
 import org.json.JSONObject;
 
-/** Handles /api/appointments, /api/appointments/upcoming, /{no}, /{no}/cancel. */
+/** Handles /api/appointments (list/filter), /upcoming, /{no}, /{no}/cancel. */
 public class AppointmentHandler extends BaseHandler {
 
     private final AppointmentController appointmentController = new AppointmentController();
@@ -30,6 +35,8 @@ public class AppointmentHandler extends BaseHandler {
 
         if (segments.length == 0 && method.equals("POST")) {
             register(exchange);
+        } else if (segments.length == 0 && method.equals("GET")) {
+            list(exchange);
         } else if (segments.length == 1 && segments[0].equals("upcoming") && method.equals("GET")) {
             upcoming(exchange);
         } else if (segments.length == 1 && method.equals("GET")) {
@@ -115,6 +122,60 @@ public class AppointmentHandler extends BaseHandler {
         ControllerResult<List<Appointment>> result = appointmentController.listUpcoming();
         sendJson(exchange, result.isSuccess() ? 200 : 400,
                 JsonUtil.fromResult(result, list -> JsonUtil.arrayOf(list, JsonUtil::appointmentJson)));
+    }
+
+    private void list(HttpExchange exchange) throws IOException {
+        if (requireAuth(exchange) == null) {
+            return;
+        }
+        Map<String, String> query = parseQuery(exchange);
+        LocalDate date = parseOptionalDate(query.get("date"));
+        LocalDate dateFrom = parseOptionalDate(query.get("dateFrom"));
+        LocalDate dateTo = parseOptionalDate(query.get("dateTo"));
+        Integer dentistId = null;
+        try {
+            dentistId = query.containsKey("dentistId") ? Integer.valueOf(query.get("dentistId")) : null;
+        } catch (NumberFormatException e) {
+            dentistId = null;
+        }
+        String patient = query.get("patient");
+
+        ControllerResult<List<Appointment>> result =
+                appointmentController.listAppointments(date, dateFrom, dateTo, dentistId, patient);
+        sendJson(exchange, result.isSuccess() ? 200 : 400,
+                JsonUtil.fromResult(result, list -> JsonUtil.arrayOf(list, JsonUtil::appointmentJson)));
+    }
+
+    private LocalDate parseOptionalDate(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        try {
+            return LocalDate.parse(text.trim());
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    private Map<String, String> parseQuery(HttpExchange exchange) {
+        Map<String, String> params = new HashMap<>();
+        String raw = exchange.getRequestURI().getRawQuery();
+        if (raw == null || raw.isEmpty()) {
+            return params;
+        }
+        for (String pair : raw.split("&")) {
+            int eq = pair.indexOf('=');
+            String key = eq >= 0 ? pair.substring(0, eq) : pair;
+            String value = eq >= 0 ? pair.substring(eq + 1) : "";
+            try {
+                key = URLDecoder.decode(key, StandardCharsets.UTF_8.name());
+                value = URLDecoder.decode(value, StandardCharsets.UTF_8.name());
+            } catch (UnsupportedEncodingException e) {
+                // UTF-8 is always supported
+            }
+            params.put(key, value);
+        }
+        return params;
     }
 
     private Dentist findDentist(JSONObject body) throws IOException {
