@@ -55,6 +55,34 @@ public class PatientDAO {
         return patients;
     }
 
+    public Patient findByContactNumber(String contactNumber) throws SQLException {
+        String sql = "SELECT id, name, address, contact_number, email FROM patients "
+                + "WHERE contact_number = ? ORDER BY id DESC LIMIT 1";
+        Connection con = DBConnection.getInstance().getConnection();
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, contactNumber);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new Patient(rs.getInt("id"), rs.getString("name"),
+                            rs.getString("address"), rs.getString("contact_number"), rs.getString("email"));
+                }
+                return null;
+            }
+        }
+    }
+
+    public void update(Patient patient) throws SQLException {
+        String sql = "UPDATE patients SET name = ?, address = ?, email = ? WHERE id = ?";
+        Connection con = DBConnection.getInstance().getConnection();
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, patient.getName());
+            pst.setString(2, patient.getAddress());
+            pst.setString(3, patient.getEmail());
+            pst.setInt(4, patient.getId());
+            pst.executeUpdate();
+        }
+    }
+
     public Patient findById(int id) throws SQLException {
         String sql = "SELECT id, name, address, contact_number, email FROM patients WHERE id = ?";
         Connection con = DBConnection.getInstance().getConnection();

@@ -7,6 +7,7 @@ const appointmentNo = params.get("appointmentNo");
 const messageEl = document.getElementById("message");
 const dentistSelect = document.getElementById("dentist");
 const treatmentSelect = document.getElementById("treatment");
+const existingPatientSelect = document.getElementById("existingPatient");
 
 document.getElementById("date").min = new Date().toISOString().slice(0, 10);
 
@@ -17,7 +18,39 @@ if (mode === "update") {
     ["patientName", "address", "contactNumber", "email"].forEach((id) => {
         document.getElementById(id).disabled = true;
     });
+    document.getElementById("existingPatientLabel").hidden = true;
+    existingPatientSelect.hidden = true;
 }
+
+let existingPatients = [];
+
+async function loadExistingPatients() {
+    if (mode !== "register") {
+        return;
+    }
+    const result = await apiFetch("/patients?q=");
+    if (!result.success) {
+        return;
+    }
+    existingPatients = result.data;
+    for (const patient of existingPatients) {
+        const option = document.createElement("option");
+        option.value = patient.id;
+        option.textContent = patient.name + " - " + patient.contactNumber;
+        existingPatientSelect.appendChild(option);
+    }
+}
+
+existingPatientSelect.addEventListener("change", () => {
+    const patient = existingPatients.find((p) => String(p.id) === existingPatientSelect.value);
+    if (!patient) {
+        return;
+    }
+    document.getElementById("patientName").value = patient.name;
+    document.getElementById("address").value = patient.address || "";
+    document.getElementById("contactNumber").value = patient.contactNumber;
+    document.getElementById("email").value = patient.email || "";
+});
 
 async function loadDentists() {
     const result = await apiFetch("/dentists");
@@ -64,7 +97,7 @@ async function loadExistingAppointment() {
 }
 
 (async () => {
-    await Promise.all([loadDentists(), loadTreatments()]);
+    await Promise.all([loadDentists(), loadTreatments(), loadExistingPatients()]);
     await loadExistingAppointment();
 })();
 

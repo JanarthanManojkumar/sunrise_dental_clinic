@@ -61,12 +61,20 @@ public class AppointmentController {
             return ControllerResult.failure(validation);
         }
         try {
-            Patient patient = new Patient();
-            patient.setName(patientName.trim());
-            patient.setAddress(address);
-            patient.setContactNumber(contactNumber.trim());
-            patient.setEmail(email == null || email.isBlank() ? null : email.trim());
-            patientDAO.insert(patient);
+            Patient patient = patientDAO.findByContactNumber(contactNumber.trim());
+            if (patient != null) {
+                patient.setName(patientName.trim());
+                patient.setAddress(address);
+                patient.setEmail(email == null || email.isBlank() ? null : email.trim());
+                patientDAO.update(patient);
+            } else {
+                patient = new Patient();
+                patient.setName(patientName.trim());
+                patient.setAddress(address);
+                patient.setContactNumber(contactNumber.trim());
+                patient.setEmail(email == null || email.isBlank() ? null : email.trim());
+                patientDAO.insert(patient);
+            }
 
             String appointmentNo = AppointmentNumberGenerator.generate(date);
 
