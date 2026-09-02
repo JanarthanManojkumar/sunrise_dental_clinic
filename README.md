@@ -10,11 +10,11 @@ Clinic management system for booking appointments, managing dentists and treatme
 
 Requires JDK 17 and a MySQL server with the `sunrise_dental_clinic` schema.
 
-Set before running:
+Create `sunrise_dental_clinic_backend/db.properties` (gitignored) before running:
 ```
-DB_URL=jdbc:mysql://localhost:3306/sunrise_dental_clinic
-DB_USER=root
-DB_PASSWORD=<your local MySQL password>
+db.url=jdbc:mysql://localhost:3306/sunrise_dental_clinic
+db.user=root
+db.password=<your local MySQL password>
 ```
 Optional, for billing emails through Brevo:
 ```
