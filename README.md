@@ -5,7 +5,6 @@ Clinic management system for booking appointments, managing dentists and treatme
 - `sunrise_dental_clinic_backend/` — Java Swing desktop app and a REST API server, sharing the same controller/DAO/model layers. NetBeans Ant project.
 - `sunrise_dental_clinic_frontend/` — HTML/CSS/JS web client talking to the REST API.
 
-See `VERSION_CONTROL_PLAN.md` for how this repo's history was built up and what's left to migrate.
 
 ## Backend setup
 
