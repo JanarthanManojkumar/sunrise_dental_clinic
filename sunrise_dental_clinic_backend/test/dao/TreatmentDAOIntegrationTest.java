@@ -7,8 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import model.Treatment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class TreatmentDAOIntegrationTest {
@@ -28,6 +30,7 @@ public class TreatmentDAOIntegrationTest {
     }
 
     @Test
+    @DisplayName("Adding a new treatment can be found again by id and by name")
     public void insertThenFindByIdAndFindByNameReturnSameTreatment() throws SQLException {
         String name = "Test Treatment " + System.nanoTime();
         Treatment treatment = new Treatment();
@@ -46,6 +49,35 @@ public class TreatmentDAOIntegrationTest {
     }
 
     @Test
+    @DisplayName("The price list includes a newly added treatment")
+    public void findAllIncludesNewlyInsertedTreatment() throws SQLException {
+        Treatment treatment = new Treatment();
+        treatment.setName("FindAll Test Treatment " + System.nanoTime());
+        treatment.setFee(new BigDecimal("1800.00"));
+        insertedTreatmentId = treatmentDAO.insert(treatment);
+
+        boolean present = treatmentDAO.findAll().stream()
+                .anyMatch(t -> t.getId() == insertedTreatmentId);
+
+        assertTrue(present);
+    }
+
+    @Test
+    @DisplayName("Looking up a treatment by an id that does not exist returns nothing")
+    public void findByIdWithUnknownIdReturnsNull() throws SQLException {
+        Treatment found = treatmentDAO.findById(999_999_999);
+        assertNull(found);
+    }
+
+    @Test
+    @DisplayName("Looking up a treatment by a name that does not exist returns nothing")
+    public void findByNameWithUnknownNameReturnsNull() throws SQLException {
+        Treatment found = treatmentDAO.findByName("This Treatment Does Not Exist " + System.nanoTime());
+        assertNull(found);
+    }
+
+    @Test
+    @DisplayName("Updating a treatment's name and fee saves the change")
     public void updateChangesNameAndFee() throws SQLException {
         Treatment treatment = new Treatment();
         treatment.setName("Before Update Treatment " + System.nanoTime());
@@ -63,6 +95,7 @@ public class TreatmentDAOIntegrationTest {
     }
 
     @Test
+    @DisplayName("The seeded Consultation treatment exists with a positive flat fee used for every bill")
     public void seededConsultationTreatmentExistsForBillingFlatFee() throws SQLException {
         Treatment consultation = treatmentDAO.findByName("Consultation");
         assertEquals("Consultation", consultation.getName());

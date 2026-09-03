@@ -6,8 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import model.Dentist;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class DentistDAOIntegrationTest {
@@ -27,6 +29,7 @@ public class DentistDAOIntegrationTest {
     }
 
     @Test
+    @DisplayName("Adding a new dentist can be looked up again by id with the same details")
     public void insertThenFindByIdReturnsSameDentist() throws SQLException {
         Dentist dentist = new Dentist();
         dentist.setName("Dr. Test " + System.nanoTime());
@@ -41,6 +44,14 @@ public class DentistDAOIntegrationTest {
     }
 
     @Test
+    @DisplayName("Looking up a dentist by an id that does not exist returns nothing")
+    public void findByIdWithUnknownIdReturnsNull() throws SQLException {
+        Dentist found = dentistDAO.findById(999_999_999);
+        assertNull(found);
+    }
+
+    @Test
+    @DisplayName("The list of all dentists includes a newly added dentist")
     public void findAllIncludesNewlyInsertedDentist() throws SQLException {
         Dentist dentist = new Dentist();
         dentist.setName("Dr. FindAll Test " + System.nanoTime());
@@ -54,6 +65,7 @@ public class DentistDAOIntegrationTest {
     }
 
     @Test
+    @DisplayName("Updating a dentist's name and specialization saves the change")
     public void updateChangesNameAndSpecialization() throws SQLException {
         Dentist dentist = new Dentist();
         dentist.setName("Dr. Before Update");
