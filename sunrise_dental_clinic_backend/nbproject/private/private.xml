@@ -2,13 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/ICBT/sunrise_dental_clinic/sunrise_dental_clinic_backend/src/api/ApiServer.java</file>
-            <file>file:/D:/ICBT/sunrise_dental_clinic/sunrise_dental_clinic_backend/src/api/AppointmentHandler.java</file>
-            <file>file:/D:/ICBT/sunrise_dental_clinic/sunrise_dental_clinic_backend/src/controller/AppointmentController.java</file>
-            <file>file:/D:/ICBT/sunrise_dental_clinic/sunrise_dental_clinic_backend/src/dao/BillDAO.java</file>
-            <file>file:/D:/ICBT/sunrise_dental_clinic/sunrise_dental_clinic_backend/src/model/Appointment.java</file>
-            <file>file:/D:/ICBT/sunrise_dental_clinic/sunrise_dental_clinic_backend/src/dao/DentistDAO.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
