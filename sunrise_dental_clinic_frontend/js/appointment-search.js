@@ -20,6 +20,25 @@ function displayAppointment(appointment) {
     btnUpdate.disabled = !active;
     btnCancel.disabled = !active;
     btnBill.disabled = appointment.status === "CANCELLED";
+    btnBill.textContent = "Calculate & Print Bill";
+    delete btnBill.dataset.receiptText;
+
+    if (!btnBill.disabled) {
+        checkExistingBill(appointment.appointmentNo).then((receiptText) => {
+            if (currentAppointment !== appointment) {
+                return;
+            }
+            if (receiptText !== null) {
+                btnBill.textContent = "View Bill";
+                btnBill.dataset.receiptText = receiptText;
+            }
+        });
+    }
+}
+
+async function checkExistingBill(appointmentNo) {
+    const result = await apiFetch("/bills/" + encodeURIComponent(appointmentNo));
+    return result.success ? result.data : null;
 }
 
 function clearAppointment() {
@@ -30,6 +49,8 @@ function clearAppointment() {
     btnUpdate.disabled = true;
     btnCancel.disabled = true;
     btnBill.disabled = true;
+    btnBill.textContent = "Calculate & Print Bill";
+    delete btnBill.dataset.receiptText;
 }
 
 document.getElementById("searchForm").addEventListener("submit", async (e) => {
@@ -76,6 +97,12 @@ btnCancel.addEventListener("click", async () => {
 
 btnBill.addEventListener("click", async () => {
     if (!currentAppointment) {
+        return;
+    }
+    if (btnBill.dataset.receiptText) {
+        sessionStorage.setItem("receiptText", btnBill.dataset.receiptText);
+        sessionStorage.setItem("receiptAppointmentNo", currentAppointment.appointmentNo);
+        window.location.href = "receipt.html";
         return;
     }
     const result = await apiFetch(

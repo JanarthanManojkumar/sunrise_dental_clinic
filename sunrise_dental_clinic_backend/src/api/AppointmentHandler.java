@@ -66,10 +66,13 @@ public class AppointmentHandler extends BaseHandler {
             return;
         }
 
+        Integer existingPatientId = body.has("existingPatientId") && !body.isNull("existingPatientId")
+                ? Integer.valueOf(body.optInt("existingPatientId")) : null;
+
         ControllerResult<Appointment> result = appointmentController.registerAppointment(
                 body.optString("patientName", null), body.optString("address", null),
                 body.optString("contactNumber", null), body.optString("email", null),
-                dentist, treatment, date, time);
+                dentist, treatment, date, time, existingPatientId);
         sendJson(exchange, result.isSuccess() ? 200 : 400, JsonUtil.fromResult(result, JsonUtil::appointmentJson));
     }
 

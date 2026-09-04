@@ -82,28 +82,52 @@ async function refreshTable() {
         });
 
         const btnBill = document.createElement("button");
-        btnBill.textContent = "Bill";
+        btnBill.textContent = "Create Bill";
         btnBill.disabled = appointment.status === "CANCELLED";
-        btnBill.addEventListener("click", async () => {
-            const billResult = await apiFetch(
-                "/bills/" + encodeURIComponent(appointment.appointmentNo) + "/generate",
-                { method: "POST" },
-            );
-            if (billResult.success) {
-                sessionStorage.setItem("receiptText", billResult.data);
-                sessionStorage.setItem("receiptAppointmentNo", appointment.appointmentNo);
-                window.location.href = "receipt.html";
-            } else {
-                messageEl.className = "message error";
-                messageEl.textContent = billResult.message;
-            }
-        });
+        wireBillButton(btnBill, appointment.appointmentNo);
 
         actions.appendChild(btnUpdate);
         actions.appendChild(btnCancel);
         actions.appendChild(btnBill);
         tableBody.appendChild(row);
+
+        if (!btnBill.disabled) {
+            checkExistingBill(appointment.appointmentNo).then((receiptText) => {
+                if (receiptText !== null) {
+                    btnBill.textContent = "View Bill";
+                    btnBill.dataset.receiptText = receiptText;
+                }
+            });
+        }
     }
+}
+
+async function checkExistingBill(appointmentNo) {
+    const result = await apiFetch("/bills/" + encodeURIComponent(appointmentNo));
+    return result.success ? result.data : null;
+}
+
+function wireBillButton(btnBill, appointmentNo) {
+    btnBill.addEventListener("click", async () => {
+        if (btnBill.dataset.receiptText) {
+            sessionStorage.setItem("receiptText", btnBill.dataset.receiptText);
+            sessionStorage.setItem("receiptAppointmentNo", appointmentNo);
+            window.location.href = "receipt.html";
+            return;
+        }
+        const billResult = await apiFetch(
+            "/bills/" + encodeURIComponent(appointmentNo) + "/generate",
+            { method: "POST" },
+        );
+        if (billResult.success) {
+            sessionStorage.setItem("receiptText", billResult.data);
+            sessionStorage.setItem("receiptAppointmentNo", appointmentNo);
+            window.location.href = "receipt.html";
+        } else {
+            messageEl.className = "message error";
+            messageEl.textContent = billResult.message;
+        }
+    });
 }
 
 document.getElementById("filterForm").addEventListener("submit", (e) => {

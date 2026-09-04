@@ -82,6 +82,24 @@ public class BillingController {
         }
     }
 
+    public ControllerResult<String> getBill(String appointmentNo) {
+        try {
+            Appointment appointment = appointmentDAO.findByAppointmentNo(appointmentNo);
+            if (appointment == null) {
+                return ControllerResult.failure("No appointment found with number " + appointmentNo);
+            }
+
+            Bill bill = billDAO.findByAppointmentId(appointment.getId());
+            if (bill == null) {
+                return ControllerResult.failure("Bill has not been generated yet.");
+            }
+
+            return ControllerResult.success(ReceiptFactory.createReceipt(appointment, bill));
+        } catch (SQLException e) {
+            return ControllerResult.failure("Database error: " + e.getMessage());
+        }
+    }
+
     public ControllerResult<String> emailBill(String appointmentNo) {
         try {
             Appointment appointment = appointmentDAO.findByAppointmentNo(appointmentNo);

@@ -115,20 +115,20 @@ public class AppointmentControllerTest {
     @DisplayName("Booking is rejected before touching the database when input is invalid")
     public void registerAppointmentRejectsInvalidInputWithoutTouchingDao() throws SQLException {
         ControllerResult<Appointment> result = appointmentController.registerAppointment("", "Addr",
-                "0771234567", "john@example.com", dentist, treatment, futureDate, time);
+                "0771234567", "john@example.com", dentist, treatment, futureDate, time, null);
 
         assertFalse(result.isSuccess());
         assertEquals("Patient name is required", result.getMessage());
     }
 
     @Test
-    @DisplayName("Booking reuses an existing patient by contact number instead of creating a duplicate")
+    @DisplayName("Booking updates the selected existing patient instead of creating a duplicate")
     public void registerAppointmentReusesExistingPatientByContactNumber() throws SQLException {
         Patient existingPatient = new Patient(7, "J. Silva", "Old Address", "0771234567", "old@example.com");
-        org.mockito.Mockito.when(patientDAO.findByContactNumber("0771234567")).thenReturn(existingPatient);
+        org.mockito.Mockito.when(patientDAO.findById(7)).thenReturn(existingPatient);
 
         ControllerResult<Appointment> result = appointmentController.registerAppointment("John Silva", "New Address",
-                "0771234567", "new@example.com", dentist, treatment, futureDate, time);
+                "0771234567", "new@example.com", dentist, treatment, futureDate, time, 7);
 
         assertTrue(result.isSuccess());
 
@@ -143,6 +143,35 @@ public class AppointmentControllerTest {
     }
 
     @Test
+    @DisplayName("Booking fails when the selected existing patient no longer exists")
+    public void registerAppointmentFailsWhenSelectedPatientNoLongerExists() throws SQLException {
+        org.mockito.Mockito.when(patientDAO.findById(7)).thenReturn(null);
+
+        ControllerResult<Appointment> result = appointmentController.registerAppointment("John Silva", "Addr",
+                "0771234567", "john@example.com", dentist, treatment, futureDate, time, 7);
+
+        assertFalse(result.isSuccess());
+        assertEquals("Selected patient no longer exists.", result.getMessage());
+        verify(patientDAO, never()).update(any(Patient.class));
+        verify(patientDAO, never()).insert(any(Patient.class));
+    }
+
+    @Test
+    @DisplayName("Booking a new patient fails when the contact number already belongs to another patient")
+    public void registerAppointmentFailsWhenContactNumberAlreadyExistsForNewPatient() throws SQLException {
+        Patient existingPatient = new Patient(7, "J. Silva", "Old Address", "0771234567", "old@example.com");
+        org.mockito.Mockito.when(patientDAO.findByContactNumber("0771234567")).thenReturn(existingPatient);
+
+        ControllerResult<Appointment> result = appointmentController.registerAppointment("John Silva", "New Address",
+                "0771234567", "new@example.com", dentist, treatment, futureDate, time, null);
+
+        assertFalse(result.isSuccess());
+        assertEquals("A patient with this contact number already exists.", result.getMessage());
+        verify(patientDAO, never()).insert(any(Patient.class));
+        verify(patientDAO, never()).update(any(Patient.class));
+    }
+
+    @Test
     @DisplayName("Booking fails with a friendly message when the dentist is already booked for that slot")
     public void registerAppointmentReturnsFriendlyMessageOnDoubleBooking() throws SQLException {
         doThrow(new SQLIntegrityConstraintViolationException(
@@ -150,7 +179,7 @@ public class AppointmentControllerTest {
                 .when(appointmentDAO).insert(any(Appointment.class));
 
         ControllerResult<Appointment> result = appointmentController.registerAppointment("John Silva", "Addr",
-                "0771234567", "john@example.com", dentist, treatment, futureDate, time);
+                "0771234567", "john@example.com", dentist, treatment, futureDate, time, null);
 
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("already has an appointment"));
@@ -163,7 +192,7 @@ public class AppointmentControllerTest {
                 .thenThrow(new SQLException("Connection refused"));
 
         ControllerResult<Appointment> result = appointmentController.registerAppointment("John Silva", "Addr",
-                "0771234567", "john@example.com", dentist, treatment, futureDate, time);
+                "0771234567", "john@example.com", dentist, treatment, futureDate, time, null);
 
         assertFalse(result.isSuccess());
         assertTrue(result.getMessage().contains("Database error"));

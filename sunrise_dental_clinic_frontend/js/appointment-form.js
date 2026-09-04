@@ -123,6 +123,7 @@ document.getElementById("appointmentForm").addEventListener("submit", async (e) 
         treatmentId: Number(treatmentSelect.value),
         date: dateValue,
         time: document.getElementById("time").value.trim(),
+        existingPatientId: existingPatientSelect.value ? Number(existingPatientSelect.value) : null,
     };
 
     const result = mode === "register"

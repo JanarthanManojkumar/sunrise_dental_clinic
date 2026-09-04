@@ -55,19 +55,26 @@ public class AppointmentController {
 
     public ControllerResult<Appointment> registerAppointment(String patientName, String address,
             String contactNumber, String email, Dentist dentist, Treatment treatment, LocalDate date,
-            LocalTime time) {
+            LocalTime time, Integer existingPatientId) {
         String validation = validateAppointment(patientName, contactNumber, dentist, treatment, date, time);
         if (!validation.equals("VALID")) {
             return ControllerResult.failure(validation);
         }
         try {
-            Patient patient = patientDAO.findByContactNumber(contactNumber.trim());
-            if (patient != null) {
+            Patient patient;
+            if (existingPatientId != null) {
+                patient = patientDAO.findById(existingPatientId);
+                if (patient == null) {
+                    return ControllerResult.failure("Selected patient no longer exists.");
+                }
                 patient.setName(patientName.trim());
                 patient.setAddress(address);
                 patient.setEmail(email == null || email.isBlank() ? null : email.trim());
                 patientDAO.update(patient);
             } else {
+                if (patientDAO.findByContactNumber(contactNumber.trim()) != null) {
+                    return ControllerResult.failure("A patient with this contact number already exists.");
+                }
                 patient = new Patient();
                 patient.setName(patientName.trim());
                 patient.setAddress(address);

@@ -130,6 +130,45 @@ public class BillingControllerTest {
     }
 
     @Test
+    @DisplayName("Getting a bill returns the receipt when a bill already exists")
+    public void getBillReturnsReceiptWhenBillExists() throws SQLException {
+        Appointment appointment = sampleAppointment();
+        Bill existingBill = new Bill(5, appointment.getId(), new BigDecimal("1500.00"),
+                new BigDecimal("4500.00"), new BigDecimal("6000.00"), java.time.LocalDateTime.now());
+        when(appointmentDAO.findByAppointmentNo("APT-20260831-001")).thenReturn(appointment);
+        when(billDAO.findByAppointmentId(appointment.getId())).thenReturn(existingBill);
+
+        ControllerResult<String> result = billingController.getBill("APT-20260831-001");
+
+        assertTrue(result.isSuccess());
+        assertTrue(result.getData().contains("6,000.00"));
+    }
+
+    @Test
+    @DisplayName("Getting a bill fails when the bill has not been generated yet")
+    public void getBillFailsWhenBillNotYetGenerated() throws SQLException {
+        Appointment appointment = sampleAppointment();
+        when(appointmentDAO.findByAppointmentNo("APT-20260831-001")).thenReturn(appointment);
+        when(billDAO.findByAppointmentId(appointment.getId())).thenReturn(null);
+
+        ControllerResult<String> result = billingController.getBill("APT-20260831-001");
+
+        assertFalse(result.isSuccess());
+        assertEquals("Bill has not been generated yet.", result.getMessage());
+    }
+
+    @Test
+    @DisplayName("Getting a bill fails when the appointment number does not exist")
+    public void getBillFailsWhenAppointmentNotFound() throws SQLException {
+        when(appointmentDAO.findByAppointmentNo("APT-MISSING")).thenReturn(null);
+
+        ControllerResult<String> result = billingController.getBill("APT-MISSING");
+
+        assertFalse(result.isSuccess());
+        assertTrue(result.getMessage().contains("No appointment found"));
+    }
+
+    @Test
     @DisplayName("Generating a bill shows a friendly message when a database error occurs")
     public void generateBillReturnsFriendlyMessageOnDatabaseError() throws SQLException {
         when(appointmentDAO.findByAppointmentNo("APT-20260831-001"))

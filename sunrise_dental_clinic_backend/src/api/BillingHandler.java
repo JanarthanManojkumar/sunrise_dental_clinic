@@ -5,7 +5,7 @@ import controller.BillingController;
 import controller.ControllerResult;
 import java.io.IOException;
 
-/** Handles /api/bills/{appointmentNo}/generate and /api/bills/{appointmentNo}/email. */
+/** Handles /api/bills/{appointmentNo}, /api/bills/{appointmentNo}/generate and /api/bills/{appointmentNo}/email. */
 public class BillingHandler extends BaseHandler {
 
     private final BillingController billingController = new BillingController();
@@ -19,9 +19,19 @@ public class BillingHandler extends BaseHandler {
             generate(exchange, segments[0]);
         } else if (segments.length == 2 && segments[1].equals("email") && method.equals("POST")) {
             email(exchange, segments[0]);
+        } else if (segments.length == 1 && method.equals("GET")) {
+            view(exchange, segments[0]);
         } else {
             sendJson(exchange, 404, JsonUtil.fail("Not found"));
         }
+    }
+
+    private void view(HttpExchange exchange, String appointmentNo) throws IOException {
+        if (requireAuth(exchange) == null) {
+            return;
+        }
+        ControllerResult<String> result = billingController.getBill(appointmentNo);
+        sendJson(exchange, result.isSuccess() ? 200 : 404, JsonUtil.fromResult(result, (String text) -> text));
     }
 
     private void generate(HttpExchange exchange, String appointmentNo) throws IOException {
