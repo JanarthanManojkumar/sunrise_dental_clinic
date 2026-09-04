@@ -9,8 +9,6 @@ const dentistSelect = document.getElementById("dentist");
 const treatmentSelect = document.getElementById("treatment");
 const existingPatientSelect = document.getElementById("existingPatient");
 
-document.getElementById("date").min = new Date().toISOString().slice(0, 10);
-
 if (mode === "update") {
     document.getElementById("pageTitle").textContent = "Sunrise Dental Clinic - Update Appointment";
     document.getElementById("banner").textContent = "Update Appointment";
@@ -55,6 +53,10 @@ existingPatientSelect.addEventListener("change", () => {
 async function loadDentists() {
     const result = await apiFetch("/dentists");
     if (result.success) {
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "-- Select Dentist --";
+        dentistSelect.appendChild(placeholder);
         for (const dentist of result.data) {
             const option = document.createElement("option");
             option.value = dentist.id;
@@ -105,6 +107,13 @@ document.getElementById("appointmentForm").addEventListener("submit", async (e) 
     e.preventDefault();
     messageEl.textContent = "";
 
+    const dateValue = document.getElementById("date").value.trim();
+    const today = new Date().toISOString().slice(0, 10);
+    if (dateValue < today) {
+        messageEl.textContent = "Appointment date cannot be in the past";
+        return;
+    }
+
     const body = {
         patientName: document.getElementById("patientName").value,
         address: document.getElementById("address").value,
@@ -112,7 +121,7 @@ document.getElementById("appointmentForm").addEventListener("submit", async (e) 
         email: document.getElementById("email").value,
         dentistId: Number(dentistSelect.value),
         treatmentId: Number(treatmentSelect.value),
-        date: document.getElementById("date").value.trim(),
+        date: dateValue,
         time: document.getElementById("time").value.trim(),
     };
 
